@@ -7,6 +7,9 @@ use Hash;
 use Auth;
 use App\Models\Student;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Validation\Rules;
+use Illuminate\View\View;
 class StudentController extends Controller
 {
 
@@ -56,5 +59,28 @@ public function logout(){
 
 
 
+public function createStudent(){
+    return view('StudentRegister');
+}
 
+public function storeStudent(Request $request){
+
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Student::class],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
+
+    $newuser = Student::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    event(new Registered($newuser));
+
+    $user = Student::where('email',$request->input('email'))->first();
+    Auth::guard('student')->login($user);
+    return redirect()->route('student_dashboard')->with('success','Login Successful');
+}
 }

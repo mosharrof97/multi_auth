@@ -7,6 +7,10 @@ use Hash;
 use Auth;
 use App\Models\Editor;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules;
+use Illuminate\Auth\Events\Registered;
+
+
 class EditorController extends Controller
 {
 
@@ -57,4 +61,30 @@ public function logout(){
 
 
 
+
+public function createEditor(Request $request){
+    return view('EditorRegister');
+}
+
+public function storeEditor(Request $request){
+
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Editor::class],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
+
+    $newuser = Editor::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    event(new Registered($newuser));
+
+    $user = Editor::where('email',$request->input('email'))->first();
+    Auth::guard('editor')->login($user);
+    return redirect()->route('editor_dashboard')->with('success','Login Successful');
+
+}
 }

@@ -7,6 +7,10 @@ use Hash;
 use Auth;
 use App\Models\Admin;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules;
+use Illuminate\Auth\Events\Registered;
+
+
 class AdminController extends Controller
 {
 
@@ -56,5 +60,32 @@ public function logout(){
 
 
 
+
+
+public function createAdmin(Request $request){
+    return view('AdminRegister');
+}
+
+public function storeAdmin(Request $request){
+
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Admin::class],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
+
+    $newuser = Admin::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    event(new Registered($newuser));
+
+    $user = Admin::where('email',$request->input('email'))->first();
+    Auth::guard('admin')->login($user);
+    return redirect()->route('admin_dashboard')->with('success','Login Successful');
+
+}
 
 }

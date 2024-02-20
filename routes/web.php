@@ -46,9 +46,11 @@ Route::middleware('admin')->group(function (){
         Route::get('/login', [AdminController::class, 'login'])->name('admin_login');
         Route::get('/logout', [AdminController::class, 'logout'])->name('admin_logout');
         Route::post('/login-submit', [AdminController::class, 'login_submit'])->name('admin_login_submit');
+        Route::get('/create', [AdminController::class, 'createAdmin'])->name('create_admin');
+        Route::post('/create', [AdminController::class, 'storeAdmin'])->name('store_admin');
         });
 
-
+        
 /////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////
 Route::middleware('editor')->group(function (){
@@ -59,6 +61,8 @@ Route::middleware('editor')->group(function (){
         Route::get('/login', [EditorController::class, 'login'])->name('editor_login');
         Route::get('/logout', [EditorController::class, 'logout'])->name('editor_logout');
         Route::post('/login-submit', [EditorController::class, 'login_submit'])->name('editor_login_submit');
+        Route::get('/create', [EditorController::class, 'createEditor'])->name('create_editor');
+        Route::post('/create', [EditorController::class, 'storeEditor'])->name('store_editor');
         });
 
 
@@ -72,6 +76,8 @@ Route::middleware('student')->group(function (){
         Route::get('/login', [StudentController::class, 'login'])->name('student_login');
         Route::get('/logout', [StudentController::class, 'logout'])->name('student_logout');
         Route::post('/login-submit', [StudentController::class, 'login_submit'])->name('student_login_submit');
+        Route::get('/create', [StudentController::class, 'createStudent'])->name('create_student');
+        Route::post('/create', [StudentController::class, 'storeStudent'])->name('store_student');
         });
 
 

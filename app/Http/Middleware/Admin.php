@@ -16,9 +16,9 @@ class Admin
     public function handle(Request $request, Closure $next): Response
     {
 
-            if(!Auth::guard('admin')->check()){
-                return redirect()->route('admin_login')->with('error','you do not have access');
-            }
+        if(!Auth::guard('admin')->check()){
+            return redirect()->route('admin_login')->with('error','you do not have access');
+        }
 
 
 
