@@ -16,7 +16,7 @@
         @endif
         @if(Session::get('success'))
         <li>{{ Session::get('success') }}</li>
-        @endif
+        @endif 
 
 
 
